@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            background-image: url('_710c50ef-5e98-436f-a394-e610e06b33e1.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        .convert-button {
+            display: inline-block;
+            font-size: 1em;
+            padding: 10px 20px;
+            border: none;
+            color: white;
+            background-color: rgb(86 109 135 / 50%);
+            border-radius: 5%;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .convert-button:hover {
+            background-color: rgb(86 109 135 / 25%);
+        }
+
+        div {
+           color : white;
+            background-color: rgb(86 109 135 / 60%);
+        }
+        
+    </style>
+</head>
+<body>
+    <button class="convert-button">Convert CSV to MultiRead</button>
+    <div>
+        <input type="checkbox" id="headerCheckbox" name="headerCheckbox">
+        <label for="headerCheckbox">Headers</label><br>
+        <input type="checkbox" id="rowIdCheckbox" name="rowIdCheckbox">
+        <label for="rowIdCheckbox">Row ID</label><br>
+    </div>
+    
+    <script>
+    document.querySelector('.convert-button').addEventListener('click', async () => {
+        const [fileHandle] = await window.showOpenFilePicker({
+            types: [{
+                description: 'CSV files',
+                accept: { 'text/csv': ['.csv'] },
+            }],
+        });
+        const file = await fileHandle.getFile();
+        if (file.type !== 'text/csv') {
+            alert('Please select a CSV file.');
+            return;
+        }
+        const contents = await file.text();
+        const lines = contents.split('\n');
+        const data = lines.map(line => line.split(','));
+        console.log(data);
+
+        let i = document.getElementById('headerCheckbox').checked ? 1 : 0;
+        let j = document.getElementById('rowIdCheckbox').checked ? 1 : 0;
+
+        let str = "";
+        
+        for(; i < data.length; i++){
+            if(data[i][j] != "")
+                str = str + "<" + data[i][j] + "; " + data[i][j+1] + "; " + data[i][j+2] + ">\n" + data[i][j+3] + "\n";
+        }
+        console.log(str);
+        const fileHandle2 = await window.showSaveFilePicker({
+            types: [{
+                description: 'Text files',
+                accept: { 'text/plain': ['.txt'] },
+            }],
+        });
+        const writable = await fileHandle2.createWritable();
+        await writable.write(str);
+        await writable.close();
+    });
+
+
+
+
+</script>
+</body>
+</html>
