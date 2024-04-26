@@ -72,7 +72,8 @@
         let str = "";
         
         for(; i < data.length; i++){
-            if(data[i][j] != "")
+            console.log(data[i][j]);
+            if(data[i][0] != "")
                 str = str + "<" + data[i][j] + "; " + data[i][j+1] + "; " + data[i][j+2] + ">\n" + data[i][j+3] + "\n";
         }
         console.log(str);
